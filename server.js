@@ -14,10 +14,6 @@ const db = mongoose.connection;
 
 db.once('open', async () => {
   console.log('Connected to the Database');
-
-  //delete existing sessions {{dev only: delete later}}
-  await mongoose.connection.collection('sessions').deleteMany({});
-  console.log('Previous sessions deleted');
 });
 db.on('error', err => console.log('Error ' + err));
 

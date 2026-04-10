@@ -1,4 +1,5 @@
 const User = require('../models/User.model');
+const Session = require('../models/Session.model');
 const bcrypt = require('bcryptjs');
 
 exports.register = async (req, res) => {
@@ -32,7 +33,10 @@ exports.login = async (req, res) => {
             }
             else {
                 if(bcrypt.compareSync(password, user.password)) {
-                    req.session.login = user.login;
+                    req.session.user = {
+                        login: user.login,
+                        id: user._id
+                    }
                     res.status(200).send({ message: 'Login succesful' });
                 }
                 else {
@@ -52,3 +56,21 @@ exports.login = async (req, res) => {
 exports.getUser = async (req, res) => {
     res.send('Logged in')
 };
+
+exports.logout = async (req, res) => {
+
+    try {
+        if(process.env.NODE_ENV !== 'production'){
+            await Session.deleteMany({});
+        }
+        req.session.destroy((err) => {
+            if(err) {
+                return res.send(err.message);
+            }
+        });
+        res.status(200).send('Logged out')
+    }
+    catch(err) {
+        res.status(500).send({ message: err.message });
+    }
+}
