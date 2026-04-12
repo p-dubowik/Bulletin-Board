@@ -26,6 +26,7 @@ app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create(m
 
 //Static files from react
 app.use(express.static(path.join(__dirname, '/client/build')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 //routes
 app.use('/api', require('./routes/ads.routes'));
