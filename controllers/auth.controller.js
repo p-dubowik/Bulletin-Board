@@ -2,28 +2,41 @@ const User = require('../models/User.model');
 const Session = require('../models/Session.model');
 const bcrypt = require('bcryptjs');
 const getImageFileType = require('../utils/getImageFileType');
+const fs = require('fs');
+const path = require('path');
 
 exports.register = async (req, res) => {
     try {
 
         const { login, password, number } = req.body;
-        const fileType = req.file ? await getImageFileType(req.file) : unknown;
+        const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
 
+            if(!login || typeof login !== 'string' || 
+                !password || typeof password !== 'string' || 
+                !req.file || !['image/png', 'image/jpeg', 'image/gif'].includes(fileType)) {
+                    if(req.file) {
+                        fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+                    }
+                    return res.status(400).send({ message: 'Bad request'});
+                }
 
-            if(login && typeof login === 'string' && password && typeof password === 'string' && req.file && ['image/png', 'image/jpeg', 'image/gif'].includes(filetype)) {
                 const userWithLogin = await User.findOne({ login });
+
                 if(userWithLogin){
+                    if(req.file){
+                        fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+                    }
                     return res.status(409).send({message: 'User already exists'});
                 }
 
-                const user = await User.create({ login, password: await bcrypt.hash(password, 10), number: number, avatar: req.file.filename });
-                res.status(201).send({ message: 'User created ' + user.login});
-            } else {
-                res.status(400).send({ message: 'Bad request'});
-            }
-
+        const user = await User.create({ login, password: await bcrypt.hash(password, 10), number: number, avatar: req.file.filename });
+        res.status(201).send({ message: 'User created ' + user.login});
+        
     }
     catch (err) {
+        if(req.file){
+            fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+        }
         res.status(500).send({ message: err.message });
     }
 };
