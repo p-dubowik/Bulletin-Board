@@ -1,4 +1,6 @@
 const Ad = require('../models/Ad.model');
+const fs = require('fs');
+const path = require('path');
 
 exports.getAll = async (req, res) => {
     try {
@@ -23,15 +25,33 @@ exports.getById = async (req, res) => {
 exports.newAd = async (req, res) => {
      try{
         const { title, text } = req.body;
-        const newAd = await new Ad({ 
+
+        const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
+        //validate all attributes
+        if(!title || typeof title !== 'string' || 
+            !text || typeof text !== 'string' || 
+            !req.file || !['image/png', 'image/jpeg', 'image/gif'].includes(fileType)
+        ) {
+            //if file exists delete it
+            if(req.file){
+                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+            }
+            return res.status(400).json({ message: 'Bad request'});
+        }
+
+        const newAd = new Ad({ 
             title, 
-            text
+            text,
+            image: req.file.filename
         });
         await newAd.save();
         
         res.json(newAd);
     }
     catch(err) {
+        if(req.file){
+                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+            }
         res.status(500).json({ message: err.message });
     }
 };
@@ -42,13 +62,31 @@ exports.edit = async (req, res) => {
         const { title, text } = req.body;
 
         const ad = await Ad.findById(req.params.id);
-        if(ad){
-            await Ad.updateOne({ _id: req.params.id }, {title: title, text: text})
-            res.json({ message: 'OK' });
+
+        if(!ad){
+            if(req.file) {
+                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+            }
+            return res.status(404).json({ message: 'Not Found...' });
         }
-        else res.status(404).json({ message: 'Not Found...' });
+
+        const updated = {
+            title,
+            text
+        };
+
+        if(req.file){
+            updated.image = req.file.filename;
+
+            fs.unlinkSync(path.join(__dirname, '../public/uploads', ad.image));
+        }
+        await Ad.updateOne({ _id: req.params.id }, updated);
+        res.json({ message: 'OK' });
     }
     catch(err) {
+        if(req.file) {
+                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+            }
         res.status(500).json({ message: err.message });
     }
 };
