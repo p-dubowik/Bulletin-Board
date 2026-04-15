@@ -72,7 +72,11 @@ exports.login = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-    res.send('Logged in')
+    if(req.session.user) {
+        res.send(req.session.user)
+    } else {
+        res.status(401).send({ message: 'Not logged in '});
+    }
 };
 
 exports.logout = async (req, res) => {
