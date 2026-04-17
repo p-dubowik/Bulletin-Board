@@ -3,10 +3,12 @@ import thunk from 'redux-thunk';
 
 // import reducers
 import ads from './adsRedux';
+import auth from './authRedux';
 
 // combine reducers
 const rootReducer = combineReducers({
-    ads
+    ads,
+    auth
 });
 
 const store = createStore(

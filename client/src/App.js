@@ -1,4 +1,8 @@
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logIn } from "./redux/authRedux";
+import API_URL from "./config";
 import MainLayout from "./components/MainLayout/MainLayout";
 import Home from "./components/Home/Home";
 import Ad from "./components/Ad/Ad";
@@ -11,6 +15,24 @@ import SearchForm from "./components/SearchForm/SearchForm";
 
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const options = {
+      method: 'GET',
+      credentials: 'include'
+    }
+
+    fetch(`${API_URL}/auth/user`, options)
+      .then(res => {
+        if (res.status === 200) return res.json();
+      })
+      .then(user => {
+        dispatch(logIn(user));
+      })
+  })
+
   return (
     <MainLayout>
         <Routes>

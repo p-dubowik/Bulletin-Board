@@ -19,10 +19,13 @@ db.once('open', async () => {
 db.on('error', err => console.log('Error ' + err));
 
 //middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create(mongoose.connection), resave: false, saveUninitialized: false }));
+app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create(mongoose.connection), resave: false, saveUninitialized: false, cookie: { secure: false } }));
 
 //Static files from react
 app.use(express.static(path.join(__dirname, '/client/build')));
