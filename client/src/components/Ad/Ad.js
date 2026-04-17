@@ -52,7 +52,7 @@ const Ad = () => {
 
                     <Card className="p-3 mt-3">
                         <h5>Seller</h5>
-                        <p>{ad.userInfo}</p>
+                        <p>{ad.userInfo.login}</p>
                     </Card>
                 </Col>
             </Row>
