@@ -2,11 +2,11 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 // import reducers
-import ad from './adRedux';
+import ads from './adsRedux';
 
 // combine reducers
 const rootReducer = combineReducers({
-    ad
+    ads
 });
 
 const store = createStore(
