@@ -21,7 +21,7 @@ const AdCard = ({ ad }) => {
 
                     <Button
                         as={Link} 
-                        to={`/ads/${ad._id}`}
+                        to={`/ad/${ad._id}`}
                         variant="primary"
                         className="mt-auto"
                     >More...</Button>

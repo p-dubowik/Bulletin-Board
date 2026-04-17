@@ -5,6 +5,7 @@ import API_URL from '../config';
 
 /* SELECTORS */
 export const getAds = ({ ads }) => ads.data;
+export const getAd = ({ ads }) => ads.single;
 export const getRequests = ({ ads }) => ads.requests;
 
 /* ACTIONS */
@@ -18,6 +19,7 @@ const END_REQUEST = createActionName('END_REQUEST');
 const ERROR_REQUEST = createActionName('ERROR_REQUEST');
 
 const LOAD_ADS = createActionName('LOAD_ADS');
+const LOAD_AD = createActionName('LOAD_AD');
 const ADD_AD = createActionName('ADD_AD');
 //
 
@@ -26,6 +28,7 @@ export const endRequest = payload => ({ payload, type: END_REQUEST });
 export const errorRequest = payload => ({ payload, type: ERROR_REQUEST });
 
 export const loadAds = payload => ({ payload, type: LOAD_ADS });
+export const loadAd = payload => ({ payload, type: LOAD_AD });
 export const addAd = payload => ({ payload, type: ADD_AD });
 
 
@@ -48,17 +51,36 @@ export const loadAdsRequest = () => {
   };
 };
 
+export const loadAdRequest = (id) => {
+    return async dispatch => {
+
+        dispatch(startRequest({ name: 'LOAD_AD' }));
+        try {
+            let res = await axios.get(`${API_URL}/ads/${id}`);
+
+            dispatch(loadAd(res.data));
+            dispatch(endRequest({ name: 'LOAD_AD' }));
+        }
+        catch (e) {
+            dispatch(errorRequest({ name: 'LOAD_AD', error: e.message }));
+        }
+    };
+};
+
 /* INITIAL STATE */
 
 const initialState = {
   data: [],
-  requests: {},
+  single: null,
+  requests: {}
 };
 
 export default function reducer(statePart = initialState, action = {}) {
     switch (action.type) {
       case LOAD_ADS: 
         return { ...statePart, data: [...action.payload] };
+      case LOAD_AD:
+        return { ...statePart, single: action.payload };
       case ADD_AD: 
         return { ...statePart, data: [...statePart.data, action.payload] }
       case START_REQUEST:
