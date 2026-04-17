@@ -8,7 +8,7 @@ const path = require('path');
 exports.register = async (req, res) => {
     try {
 
-        const { login, password, number } = req.body;
+        const { login, password, phone } = req.body;
         const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
 
             if(!login || typeof login !== 'string' || 
@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
                     return res.status(409).send({message: 'User already exists'});
                 }
 
-        const user = await User.create({ login, password: await bcrypt.hash(password, 10), number: number, avatar: req.file.filename });
+        const user = await User.create({ login, password: await bcrypt.hash(password, 10), phone: phone, avatar: req.file.filename });
         res.status(201).send({ message: 'User created ' + user.login});
         
     }

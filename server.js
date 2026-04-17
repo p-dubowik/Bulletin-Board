@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 //routes
 app.use('/api', require('./routes/ads.routes'));
 app.use('/api', require('./routes/users.routes'));
-app.use('/auth', require('./routes/auth.routes'));
+app.use('/api/auth', require('./routes/auth.routes'));
 
 //otherwise serve react app
 app.get('/*', (req, res) => {
