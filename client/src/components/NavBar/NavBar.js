@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
 
-const NavBar = ({ user, setUser }) => {
+const NavBar = ({}) => {
     return(
         <Navbar expand="lg" bg="dark" variant="dark">
             <Container fluid>
@@ -11,18 +11,11 @@ const NavBar = ({ user, setUser }) => {
                 <Nav className="ms-auto">
                     <Nav.Link as={NavLink} to='/' >Home</Nav.Link>
 
-                    {!user && (
                         <Nav.Link as={NavLink} to='/login'>Log in</Nav.Link>
-                    )}
 
-                    {user && (
-                        <Nav.Link onClick={() => {
-                            fetch('auth/logout');
-                            setUser(null);
-                        }}>
-                            Log out
-                        </Nav.Link>
-                    )}
+                        <Nav.Link as={NavLink} to='/logout'>Log out</Nav.Link>
+
+
 
 
                 </Nav>
