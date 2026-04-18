@@ -27,12 +27,13 @@ function App() {
 
     fetch(`${API_URL}/auth/user`, options)
       .then(res => {
+        if(!res.ok) throw new Error('not logged in')
         if (res.status === 200) return res.json();
       })
       .then(user => {
         dispatch(logIn(user));
       })
-  })
+  }, [dispatch])
 
   return (
     <MainLayout>

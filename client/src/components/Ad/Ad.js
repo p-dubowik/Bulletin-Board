@@ -4,12 +4,13 @@ import { useParams } from "react-router-dom";
 import { getAd, getRequests, loadAdRequest } from "../../redux/adsRedux";
 import { BASE_URL } from "../../config";
 
-import { Container, Row, Col, Image, Card } from "react-bootstrap";
+import { Container, Row, Col, Image, Card, Button } from "react-bootstrap";
 
 
 const Ad = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
+    const user = useSelector(state => state.auth.user);
 
     const ad = useSelector(getAd);
     const requests = useSelector(getRequests);
@@ -26,12 +27,14 @@ const Ad = () => {
         return <p>Error</p>;
     }
 
+    const isOP = user && ad.userInfo && user._id === ad.userInfo._id;
+
 
     return (
         <Container className="mt-5">
             <Row>
                 <Col>
-                    <Image src
+                    <Image
                         src={`${BASE_URL}/uploads/${ad.image}`} 
                         rounded
                         fluid
@@ -50,10 +53,20 @@ const Ad = () => {
                         <p className="text-muted">{ad.date}</p>
                     </Card>
 
-                    <Card className="p-3 mt-3">
+                    <Card className="p-3 mt-2">
                         <h5>Seller</h5>
-                        <p>{ad.userInfo.login}</p>
+                        <p>{ad.userInfo?.login}</p>
                     </Card>
+
+                    {isOP && (
+
+                        <Card className="p-3 mt-1">
+                            <div className="d-flex gap-3">
+                                <Button className="w-100" variant="outline-primary">Edit</Button>
+                                <Button className="w-100" variant="outline-danger">Delete</Button>
+                            </div>
+                        </Card>
+                    )}
                 </Col>
             </Row>
         </Container>
