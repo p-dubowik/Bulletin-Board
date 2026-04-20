@@ -43,8 +43,13 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
+        console.log("SET-COOKIE HEADER:", res.getHeader('set-cookie'));
         const { login, password } = req.body;
-        if(login && typeof login === 'string' && password && typeof password === 'string') {
+
+        if(
+            login && typeof login === 'string' && 
+            password && typeof password === 'string'
+        ) {
             const user = await User.findOne({ login });
             if(!user) {
                 return res.status(400).send({ message: 'Login or password is incorrect' });
@@ -54,7 +59,13 @@ exports.login = async (req, res) => {
                     req.session.user = {
                         login: user.login,
                         _id: user._id
-                    }
+                    };
+
+                    req.session.save(err => {
+                        if(err) {
+                            return res.status(500).json({ message: err.message });
+                        }
+                    })
                     res.status(200).json({ _id: user._id, login: user.login });
                 }
                 else {

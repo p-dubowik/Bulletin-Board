@@ -1,6 +1,16 @@
+const { log } = require('console');
 const Ad = require('../models/Ad.model');
 const fs = require('fs');
 const path = require('path');
+
+const deleteFile = async (filePath) => {
+    try {
+        await fs.unlinkSync(filePath);
+    }
+    catch (err) {
+        console.log('Error', err.message);
+    }
+}
 
 exports.getAll = async (req, res) => {
     try {
@@ -23,35 +33,55 @@ exports.getById = async (req, res) => {
 };
 
 exports.newAd = async (req, res) => {
-     try{
-        const { title, text } = req.body;
+    try {
+        console.log("SESSION:", req.session);
+        console.log("USER:", req.session?.user);
+        const {title, text, price, location} = req.body;
 
-        const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
-        //validate all attributes
-        if(!title || typeof title !== 'string' || 
-            !text || typeof text !== 'string' || 
-            !req.file || !['image/png', 'image/jpeg', 'image/gif'].includes(fileType)
+        if(
+            !title || typeof title !== 'string' ||
+            !text || typeof text !== 'string' ||
+            !price || typeof price !== 'string' ||
+            !location || typeof location !== 'string'
         ) {
-            //if file exists delete it
-            if(req.file){
-                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
-            }
-            return res.status(400).json({ message: 'Bad request'});
+            await deleteFile(path.join(__dirname, '../public/uploads', req.file.filename))
+            return res.status(400).json({ message: 'Invalid Data'});
         }
 
-        const newAd = new Ad({ 
-            title, 
-            text,
-            image: req.file.filename
-        });
-        await newAd.save();
-        
-        res.json(newAd);
-    }
-    catch(err) {
-        if(req.file){
-                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+        if(!req.file) {
+            return res.status(400).json({ message: 'Image required' });
+        }
+
+        const fileType = ['image/png', 'image/jpeg', 'image/gif'];
+        if(!fileType.includes(req.file.mimetype)) {
+            return res.status(400).json({ message: 'Invalid File Type' });
+        }
+
+        if(!req.session?.user?._id) {
+            if(req.file) {
+                await deleteFile(path.join(__dirname, '../public/uploads', req.file.filename));
             }
+            return res.status(401).json({ message: 'Not logged in' });
+        }
+
+        const newAd = new Ad({
+            title,
+            text,
+            price,
+            location,
+            image: req.file.filename,
+            userInfo: req.session.user._id,
+            date: new Date().toISOString()
+        });
+
+        await newAd.save();
+
+        console.log('4 ok')
+
+    } catch (err) {
+        if(req.file) {
+            await deleteFile(path.join(__dirname, '../public/uploads', req.file.filename));
+        }
         res.status(500).json({ message: err.message });
     }
 };
@@ -59,21 +89,23 @@ exports.newAd = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         //less required data for now
-        const { title, text } = req.body;
+        const { title, text, price, location } = req.body;
 
         const ad = await Ad.findById(req.params.id);
 
         if(!ad){
             if(req.file) {
-                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+                await deleteFile(path.join(__dirname, '../public/uploads', req.file.filename));
             }
             return res.status(404).json({ message: 'Not Found...' });
         }
 
-        const updated = {
-            title,
-            text
-        };
+        const updated = {};
+
+        if(title) updated.title = title;
+        if(text) updated.text = text;
+        if(price) updated.price = price;
+        if(location) updated.location = location;
 
         if(req.file){
             updated.image = req.file.filename;
@@ -85,7 +117,7 @@ exports.edit = async (req, res) => {
     }
     catch(err) {
         if(req.file) {
-                fs.unlinkSync(path.join(__dirname, '../public/uploads', req.file.filename));
+                await deleteFile(path.join(__dirname, '../public/uploads', req.file.filename));
             }
         res.status(500).json({ message: err.message });
     }

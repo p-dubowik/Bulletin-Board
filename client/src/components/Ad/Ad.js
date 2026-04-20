@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getAd, getRequests, loadAdRequest } from "../../redux/adsRedux";
 import { BASE_URL } from "../../config";
+import { useNavigate } from "react-router-dom";
 
 import { Container, Row, Col, Image, Card, Button } from "react-bootstrap";
 
@@ -10,6 +11,7 @@ import { Container, Row, Col, Image, Card, Button } from "react-bootstrap";
 const Ad = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const user = useSelector(state => state.auth.user);
 
     const ad = useSelector(getAd);
@@ -28,6 +30,8 @@ const Ad = () => {
     }
 
     const isOP = user && ad.userInfo && user._id === ad.userInfo._id;
+
+    
 
 
     return (
@@ -62,7 +66,7 @@ const Ad = () => {
 
                         <Card className="p-3 mt-1">
                             <div className="d-flex gap-3">
-                                <Button className="w-100" variant="outline-primary">Edit</Button>
+                                <Button className="w-100" variant="outline-primary" onClick={() => navigate(`/edit/${ad._id}`)}>Edit</Button>
                                 <Button className="w-100" variant="outline-danger">Delete</Button>
                             </div>
                         </Card>

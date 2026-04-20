@@ -7,7 +7,7 @@ import MainLayout from "./components/MainLayout/MainLayout";
 import Home from "./components/Home/Home";
 import Ad from "./components/Ad/Ad";
 import AdEdit from "./components/AdEdit/AdEdit";
-import AdForm from "./components/AdForm/AdForm";
+import AddAd from "./components/AddAd/AddAd";
 import Login from "./components/Login/Login";
 import Logout from "./components/Logout/Logout";
 import Signup from "./components/Signup/Signup";
@@ -40,7 +40,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/ad/:id" element={<Ad />} />
-          <Route path="/add" element={<AdForm />} />
+          <Route path="/add" element={<AddAd />} />
           <Route path="/edit/:id" element={<AdEdit />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
