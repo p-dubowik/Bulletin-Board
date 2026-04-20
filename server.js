@@ -20,7 +20,7 @@ db.on('error', err => console.log('Error ' + err));
 
 //middleware
 app.use(cors({
-    origin: 'http://localhost:3000', //change on deploy
+    origin: 'https://bulletin-board-zv3m.onrender.com',
     credentials: true
 }));
 app.use(express.json());
