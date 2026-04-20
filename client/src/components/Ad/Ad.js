@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getAd, getRequests, loadAdRequest } from "../../redux/adsRedux";
 import API_URL, { BASE_URL } from "../../config";
+import { IMGS_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
 
 import { Container, Row, Col, Image, Card, Button } from "react-bootstrap";
@@ -60,7 +61,7 @@ const Ad = () => {
             <Row>
                 <Col>
                     <Image
-                        src={`${BASE_URL}/uploads/${ad.image}`} 
+                        src={`${IMGS_URL + ad.image}`} 
                         rounded
                         fluid
                         style={{ height: '400px', objectFit: 'cover'}}

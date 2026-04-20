@@ -45,7 +45,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/search/:phrase" element={<SearchForm />} />
+          <Route path="/search/:searchPhrase" element={<SearchForm />} />
         </Routes>
     </MainLayout>
   );

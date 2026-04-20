@@ -138,8 +138,21 @@ exports.delete = async (req, res) => {
 };
 
 exports.getBySearch = async (req, res) => {
-    //placeholder
-    res.json({ message: 'OK' });
+    try {
+        const { searchPhrase } = req.params;
+
+        const ads = await Ad.find({
+            $or: [
+                {title: { $regex: searchPhrase, $options: 'i'}},
+                {location: { $regex: searchPhrase, $options: 'i'}},
+            ]
+        });
+
+        res.json(ads);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
 

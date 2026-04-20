@@ -1,4 +1,5 @@
 import { BASE_URL } from "../../config";
+import { IMGS_URL } from "../../config";
 import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -10,7 +11,7 @@ const AdCard = ({ ad }) => {
 
                 <Card>
                     <Card.Img 
-                    src={`${BASE_URL}/uploads/${ad.image}`}
+                    src={`${IMGS_URL + ad.image}`}
                     style={{ height: '200px', objectFit: 'cover'}}
                 />
 
