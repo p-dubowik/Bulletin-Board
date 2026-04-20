@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getAd, getRequests, loadAdRequest } from "../../redux/adsRedux";
-import { BASE_URL } from "../../config";
+import API_URL, { BASE_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
 
 import { Container, Row, Col, Image, Card, Button } from "react-bootstrap";
@@ -30,6 +30,27 @@ const Ad = () => {
     }
 
     const isOP = user && ad.userInfo && user._id === ad.userInfo._id;
+
+    const handleDelete = async () => {
+        try {
+            const options = {
+                method: 'DELETE',
+                credentials: 'include'
+            }
+
+            const res = await fetch(`${API_URL}/ads/${ad._id}`, options);
+
+            if(res.ok) {
+                navigate('/');
+            }
+            else {
+                console.log('failed')
+            }
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+    }
 
     
 
@@ -67,7 +88,7 @@ const Ad = () => {
                         <Card className="p-3 mt-1">
                             <div className="d-flex gap-3">
                                 <Button className="w-100" variant="outline-primary" onClick={() => navigate(`/edit/${ad._id}`)}>Edit</Button>
-                                <Button className="w-100" variant="outline-danger">Delete</Button>
+                                <Button className="w-100" variant="outline-danger" onClick={handleDelete}>Delete</Button>
                             </div>
                         </Card>
                     )}
