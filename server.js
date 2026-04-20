@@ -10,7 +10,7 @@ const app = express();
 
 
 //establish database
-mongoose.connect('mongodb://0.0.0.0:27017/BulletinBoard', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 db.once('open', async () => {
@@ -20,12 +20,12 @@ db.on('error', err => console.log('Error ' + err));
 
 //middleware
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:3000', //change on deploy
     credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create(mongoose.connection), resave: false, saveUninitialized: false, cookie: { secure: false } }));
+app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create(mongoose.connection), resave: false, saveUninitialized: false, cookie: { secure: true, sameSite: 'none' } }));
 
 //Static files from react
 app.use(express.static(path.join(__dirname, '/client/build')));
