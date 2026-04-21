@@ -19,6 +19,10 @@ const Ad = () => {
     const requests = useSelector(getRequests);
 
     useEffect(() => {
+        console.log("PARAM ID:", id);
+    }, [id]);
+
+    useEffect(() => {
         dispatch(loadAdRequest(id));
     }, [dispatch, id]);
 

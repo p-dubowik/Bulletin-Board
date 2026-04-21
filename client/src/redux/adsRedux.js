@@ -54,6 +54,11 @@ export const loadAdsRequest = () => {
 export const loadAdRequest = (id) => {
     return async dispatch => {
 
+        if(!id) {
+          dispatch(errorRequest({ name: 'LOAD_AD', error: 'Missing ID' }));
+          return;
+        }
+
         dispatch(startRequest({ name: 'LOAD_AD' }));
         try {
             let res = await axios.get(`${API_URL}/ads/${id}`);
