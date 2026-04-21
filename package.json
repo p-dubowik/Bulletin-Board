@@ -21,5 +21,8 @@
   "scripts": {
     "start": "node server.js",
     "build": "cd client && npm install --legacy-peer-deps && npm run build"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
