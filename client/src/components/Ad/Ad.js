@@ -34,6 +34,8 @@ const Ad = () => {
         return <p>Error</p>;
     }
 
+    if(!ad) return null;
+
     const isOP = user && ad.userInfo && user._id === ad.userInfo._id;
 
     const handleDelete = async () => {
