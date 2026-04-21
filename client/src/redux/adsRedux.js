@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../src/api/axios';
 import API_URL from '../config';
 
 
@@ -74,6 +74,7 @@ export const loadAdRequest = (id) => {
 
 export const searchAdsRequest = (searchPhrase) => {
   return async (dispatch) => {
+    console.log("SEARCH PHRASE:", searchPhrase);
     dispatch(startRequest({ name: 'LOAD_ADS' }));
 
     try{
