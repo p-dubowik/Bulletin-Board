@@ -13,8 +13,7 @@
     "mongodb": "4.17.0",
     "mongoose": "7.4.3",
     "multer": "1.4.4",
-    "npm-force-resolutions": "^0.0.10",
-    "path": "^0.12.7"
+    "npm-force-resolutions": "^0.0.10"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
