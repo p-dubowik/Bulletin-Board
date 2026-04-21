@@ -37,7 +37,7 @@ app.use('/api', require('./routes/users.routes'));
 app.use('/api/auth', require('./routes/auth.routes'));
 
 //otherwise serve react app
-app.get('/*', (req, res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/client/build/index.html'));
 });
 
