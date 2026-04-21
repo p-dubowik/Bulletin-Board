@@ -1,6 +1,4 @@
-if(process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
+require('dotenv').config({ path: '.env' });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -27,7 +25,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create(mongoose.connection), resave: false, saveUninitialized: false, cookie: { secure: true, sameSite: 'none' } }));
+app.use(session({ secret: process.env.SESSION_SECRET, store: Mongostore.create({ mongoUrl: process.env.MONGO_URL }), resave: false, saveUninitialized: false, cookie: { secure: true, sameSite: 'none' } }));
 
 //Static files from react
 app.use(express.static(path.join(__dirname, '/client/build')));
